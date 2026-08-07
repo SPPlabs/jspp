@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: jspp-es-website
+    container_name: jspp
     restart: always
     environment:
       - NODE_ENV=production
