@@ -1,0 +1,24 @@
+services:
+  client-website:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jspp-es-website
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - NEXT_PUBLIC_SPPLABS_API_HOST=${NEXT_PUBLIC_SPPLABS_API_HOST:-https://api.spplabs.es}
+      - NEXT_PUBLIC_SPPLABS_DOMAIN=${NEXT_PUBLIC_SPPLABS_DOMAIN:-jspp.es}
+      - NEXT_PUBLIC_SPPLABS_API_KEY=${NEXT_PUBLIC_SPPLABS_API_KEY}
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jspp-es.rule=Host(`jspp.es`) || Host(`www.jspp.es`)"
+      - "traefik.http.routers.jspp-es.entrypoints=web"
+      - "traefik.http.services.jspp-es.loadbalancer.server.port=3000"
+
+networks:
+  proxy:
+    external: true
