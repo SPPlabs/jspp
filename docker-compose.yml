@@ -3,6 +3,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_SPPLABS_API_HOST=${NEXT_PUBLIC_SPPLABS_API_HOST:-https://api.spplabs.es}
+        - NEXT_PUBLIC_SPPLABS_DOMAIN=${NEXT_PUBLIC_SPPLABS_DOMAIN:-jspp.es}
+        - NEXT_PUBLIC_SPPLABS_API_KEY=${NEXT_PUBLIC_SPPLABS_API_KEY}
     container_name: jspp
     restart: always
     environment:
