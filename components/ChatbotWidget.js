@@ -63,6 +63,7 @@ export default function ChatbotWidget() {
     const { visitorId } = getVisitorAndSessionIds();
 
     const result = await sendChatMessage({
+      userMessage: userText,
       messages: newMessages.map((m) => ({ role: m.role, content: m.content })),
       visitorId: visitorId || 'anonymous-visitor',
     });
