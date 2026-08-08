@@ -4,7 +4,19 @@ All API communication between the client website and the SPP Labs platform targe
 
 ---
 
-## 1. Global API Authentication & CORS Header Rules
+## 1. Quick-Reference API Gateway Matrix
+
+| Endpoint | HTTP Method | CORS Allowed Headers | Auth Headers Required | Body Payload Fields Required | Response Type |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `/contacts` | `POST` | `Content-Type, Authorization, x-api-key, x-website-domain` | `x-api-key` or `Authorization: Bearer` | `domain`, `apiKey`, `name`, `email`, `message` | `JSON (200 OK)` |
+| `/bookings` | `GET` | `Content-Type, Authorization, x-api-key, x-website-domain` | Domain query param (`?domain=...`) | N/A | `JSON (200 OK)` |
+| `/bookings` | `POST` | `Content-Type, Authorization, x-api-key, x-website-domain` | `x-api-key` or `Authorization: Bearer` | `domain`, `apiKey`, `name`, `email`, `date`, `time` | `JSON (200 OK)` |
+| `/api/chat` | `POST` | `Content-Type, Authorization, x-api-key` *(Omit `x-website-domain` header)* | `Authorization: Bearer <API_KEY>` | `website_id`, `domain`, `apiKey`, `message` (max 150 chars), `visitorId` | `Stream (text/event-stream)` |
+| `/api/analytics` | `POST` | `Content-Type, Authorization, x-api-key, x-website-domain` | `x-api-key` or `data-website-domain` | `website_id`, `event_type`, `visitor_id`, `session_id` | `JSON (200 OK)` |
+
+---
+
+## 2. Global API Authentication & CORS Header Rules
 
 ### Standard Authentication Headers
 HTTP requests sent to the API gateway must supply API key and domain credentials via headers and/or JSON body fields.
@@ -24,7 +36,7 @@ x-website-domain: clientbusiness.com
 
 ---
 
-## 2. Endpoints Specification
+## 3. Endpoints Specification
 
 ### A. Contact Form Submission
 * **Endpoint:** `POST https://api.spplabs.es/contacts`
@@ -127,15 +139,10 @@ x-website-domain: clientbusiness.com
 
 ---
 
-## 3. Rate Limiting & HTTP Error Handling
-When a user exceeds rate limits, the API gateway returns **HTTP 429 Too Many Requests**:
+## 4. Rate Limiting & HTTP Error Handling
+When a user exceeds rate limits or provides an unauthenticated API key, the gateway returns HTTP status codes:
 
-```json
-{
-  "success": false,
-  "error": "Too Many Requests",
-  "message": "Has enviado demasiados mensajes. Por favor, espera un momento antes de volver a intentarlo."
-}
-```
+- **HTTP 401 Unauthorized:** Invalid or missing API Key (`{"error":"Unauthorized","message":"Invalid API key"}`).
+- **HTTP 429 Too Many Requests:** Exceeded rate limits (`{"error":"Too Many Requests","message":"Has enviado demasiados mensajes..."}`).
 
 AI Coder Agents must handle HTTP status codes `400` (Validation error), `401` (Unauthorized key/domain), `429` (Rate limited), and `500` (Internal server error) gracefully in the Next.js frontend UI.
