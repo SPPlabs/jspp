@@ -11,12 +11,12 @@ All client websites connect directly to the **SPP Labs CRM Dashboard** backend i
 - **Framework:** Next.js (App Router - React 19+).
 - **Styling:** Tailwind CSS (v4 / modern utility-first CSS).
 - **Typography & Icons:** Google Fonts (`Inter`, `Outfit`, or `Roboto`) and Lucide React or Heroicons.
-- **Data Fetching:** Native `fetch` with strict error boundary management and clean state updates.
+- **Data Fetching:** Native `fetch` with strict error boundary management, dynamic runtime configuration, and clean state updates.
 
 ---
 
-## 3. Environment Variables Configuration (`.env.local`)
-Every client website repository must include a `.env.local` file containing:
+## 3. Environment Variables Configuration (`.env.local` & Production `.env`)
+Every client website repository must include a `.env.example` file (for repository documentation) and a `.env.local` file (for local development). Real API tokens must be supplied in the production `.env` file on the server.
 
 ```env
 # Host domain for the SPP Labs CRM API Engine
@@ -28,6 +28,9 @@ NEXT_PUBLIC_SPPLABS_DOMAIN=clientbusiness.com
 # Public API Token issued from the SPP Labs CRM Dashboard (Format: spp_api_...)
 NEXT_PUBLIC_SPPLABS_API_KEY=spp_api_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6
 ```
+
+> [!IMPORTANT]
+> Next.js inlines `NEXT_PUBLIC_*` environment variables during build time (`npm run build`). Always pass these variables as `ARG`s in the Docker builder stage and `build.args` in `docker-compose.yml` so production builds embed the real API credentials.
 
 ---
 
@@ -55,9 +58,9 @@ app/
 ---
 
 ## 5. UI/UX & Tailwind CSS Styling Guidelines
-- **Visual Quality:** Modern dark/light theme contrast, glassmorphism cards (`backdrop-blur-md bg-white/80 border border-zinc-200 shadow-sm`), smooth micro-interactions.
+- **Visual Quality:** Modern dark/light theme contrast, glassmorphism cards (`backdrop-blur-md bg-white/80 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 shadow-sm`), smooth micro-interactions.
 - **User Feedback:**
   - Active submission states (*loading spinners*, disabled buttons with `opacity-50 cursor-not-allowed`).
-  - Clear success banners (`bg-emerald-50 text-emerald-800 border-emerald-200`).
-  - Friendly error banners for network or validation failures (`bg-red-50 text-red-800 border-red-200`).
+  - Clear success banners (`bg-emerald-950/80 border-emerald-800 text-emerald-200`).
+  - Friendly error banners for network or validation failures (`bg-red-950/80 border-red-800 text-red-200`).
 - **No Dummy Content:** Forms, calendars, and text sections must present clean, realistic business content.

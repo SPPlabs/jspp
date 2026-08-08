@@ -49,21 +49,16 @@ The Next.js client website includes the tracker script in the root layout (`app/
 </script>
 ```
 
-### Analytics Event Ingestion Payload Example:
-```json
-{
-  "website_id": "clientbusiness.com",
-  "apiKey": "spp_api_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
-  "visitor_id": "c89a01f2-7721-419b-a012-998811223344",
-  "session_id": "f12e3456-e89b-12d3-a456-426614174000",
-  "event_type": "page_view",
-  "page_url": "/contacto",
-  "page_title": "Contacto | Business Name",
-  "referrer": "https://google.com",
-  "screen_width": 1920,
-  "screen_height": 1080,
-  "duration_ms": 12500,
-  "scroll_percent": 85
+### Dynamic Client State & Runtime Config Resolution
+To prevent hardcoding example tokens in compiled client bundles, helper libraries (`lib/api.js`, `lib/analytics.js`) should resolve configuration dynamically via functions rather than module top-level constants:
+
+```javascript
+function getAnalyticsConfig() {
+  return {
+    apiHost: process.env.NEXT_PUBLIC_SPPLABS_API_HOST || 'https://api.spplabs.es',
+    domain: process.env.NEXT_PUBLIC_SPPLABS_DOMAIN || 'clientbusiness.com',
+    apiKey: process.env.NEXT_PUBLIC_SPPLABS_API_KEY || '',
+  };
 }
 ```
 
